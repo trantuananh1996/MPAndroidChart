@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.github.mikephil.charting.BuildConfig;
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.animation.Easing.EasingFunction;
@@ -70,7 +71,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /**
      * flag that indicates if logging is enabled or not
      */
-    protected boolean mLogEnabled = false;
+    protected boolean mLogEnabled = BuildConfig.DEBUG;
 
     /**
      * object that holds all data that was originally set for the chart, before
@@ -429,19 +430,54 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
 
             mDescPaint.setTypeface(mDescription.getTypeface());
             mDescPaint.setTextSize(mDescription.getTextSize());
-            mDescPaint.setColor(mDescription.getTextColor());
             mDescPaint.setTextAlign(mDescription.getTextAlign());
+
 
             float x, y;
 
             // if no position specified, draw on default position
             if (position == null) {
-                x = getWidth() - mViewPortHandler.offsetRight() - mDescription.getXOffset();
-                y = getHeight() - mViewPortHandler.offsetBottom() - mDescription.getYOffset();
+                switch (mDescription.getDescriptionLocation()) {
+                    case BOTTOM_RIGHT:
+                        x = getWidth() - mViewPortHandler.offsetRight() - mDescription.getXOffset();
+                        y = getHeight() - mViewPortHandler.offsetBottom() - mDescription.getYOffset();
+                        break;
+                    case TOP_LEFT:
+                        x = mViewPortHandler.offsetLeft() + Math.round(Utils.calcTextWidth(mDescPaint, mDescription.getText()));
+                        y = Math.round(Utils.calcTextHeight(mDescPaint, "Q")) + mDescription.getYOffset() * 2;
+                        break;
+                    case TOP_RIGHT:
+                        x = getWidth() - mViewPortHandler.offsetRight() - mDescription.getXOffset();
+                        y = Math.round(Utils.calcTextHeight(mDescPaint, "Q")) + mDescription.getYOffset() * 2;
+                        break;
+                    case BOTTOM_LEFT:
+                        x = mViewPortHandler.offsetLeft() + Math.round(Utils.calcTextWidth(mDescPaint, mDescription.getText()));
+                        y = getHeight() - mViewPortHandler.offsetBottom() - mDescription.getYOffset();
+                        break;
+                    case BOTTOM_CENTER:
+                        x = getWidth() / 2 + Math.round(Utils.calcTextWidth(mDescPaint, mDescription.getText())) / 2 + mDescription.getXOffset() * 2;
+                        y = getHeight() - mViewPortHandler.offsetBottom() - mDescription.getYOffset();
+                        break;
+                    default:
+                        float descriptionTextWidth = Math.round(Utils.calcTextWidth(mDescPaint, mDescription.getText()));
+                        x = getWidth() / 2 + descriptionTextWidth / 2 + mDescription.getXOffset() * 2;
+                        y = Math.round(Utils.calcTextHeight(mDescPaint, "Q")) + mDescription.getYOffset() * 2;
+                        break;
+                }
             } else {
                 x = position.x;
                 y = position.y;
             }
+            mDescPaint.setColor(mDescription.getBackgroundColor());
+            float descriptionTextWidth = Math.round(Utils.calcTextWidth(mDescPaint, mDescription.getText()));
+            float descriptionTextHeight = Math.round(Utils.calcTextHeight(mDescPaint, "Q"));
+            float padding = mDescription.getBackgroundPadding();
+            c.drawRect(x + padding,
+                    y + padding,
+                    x - descriptionTextWidth - padding,
+                    y - descriptionTextHeight - padding,
+                    mDescPaint);
+            mDescPaint.setColor(mDescription.getTextColor());
 
             c.drawText(mDescription.getText(), x, y, mDescPaint);
         }
@@ -557,7 +593,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
      * This method will call the listener.
-     * @param x The x-value to highlight
+     *
+     * @param x            The x-value to highlight
      * @param dataSetIndex The dataset index to search in
      */
     public void highlightValue(float x, int dataSetIndex) {
@@ -568,8 +605,9 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * Highlights the value at the given x-value and y-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
      * This method will call the listener.
-     * @param x The x-value to highlight
-     * @param y The y-value to highlight. Supply `NaN` for "any"
+     *
+     * @param x            The x-value to highlight
+     * @param y            The y-value to highlight. Supply `NaN` for "any"
      * @param dataSetIndex The dataset index to search in
      */
     public void highlightValue(float x, float y, int dataSetIndex) {
@@ -579,7 +617,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /**
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
-     * @param x The x-value to highlight
+     *
+     * @param x            The x-value to highlight
      * @param dataSetIndex The dataset index to search in
      * @param callListener Should the listener be called for this change
      */
@@ -590,8 +629,9 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /**
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
-     * @param x The x-value to highlight
-     * @param y The y-value to highlight. Supply `NaN` for "any"
+     *
+     * @param x            The x-value to highlight
+     * @param y            The y-value to highlight. Supply `NaN` for "any"
      * @param dataSetIndex The dataset index to search in
      * @param callListener Should the listener be called for this change
      */
@@ -851,7 +891,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param durationMillisX
      * @param durationMillisY
-     * @param easing         a custom easing function to be used on the animation phase
+     * @param easing          a custom easing function to be used on the animation phase
      */
     @RequiresApi(11)
     public void animateXY(int durationMillisX, int durationMillisY, EasingFunction easing) {
@@ -902,9 +942,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @param durationMillisY
      * @param easingX         a predefined easing option
      * @param easingY         a predefined easing option
-     *
-     * @deprecated Use {@link #animateXY(int, int, EasingFunction, EasingFunction)}
      * @see #animateXY(int, int, EasingFunction, EasingFunction)
+     * @deprecated Use {@link #animateXY(int, int, EasingFunction, EasingFunction)}
      */
     @Deprecated
     public void animateXY(int durationMillisX, int durationMillisY, Easing.EasingOption easingX,
@@ -920,9 +959,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param durationMillis
      * @param easing         a predefined easing option
-     *
-     * @deprecated Use {@link #animateX(int, EasingFunction)}
      * @see #animateX(int, EasingFunction)
+     * @deprecated Use {@link #animateX(int, EasingFunction)}
      */
     @Deprecated
     public void animateX(int durationMillis, Easing.EasingOption easing) {
@@ -937,9 +975,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param durationMillis
      * @param easing         a predefined easing option
-     *
-     * @deprecated Use {@link #animateY(int, EasingFunction)}
      * @see #animateY(int, EasingFunction)
+     * @deprecated Use {@link #animateY(int, EasingFunction)}
      */
     @Deprecated
     public void animateY(int durationMillis, Easing.EasingOption easing) {

@@ -10,6 +10,11 @@ import com.github.mikephil.charting.utils.Utils;
  */
 public class Description extends ComponentBase {
 
+    public enum Location {
+        TOP_LEFT, TOP_CENTER, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT
+    }
+
+    private Location descriptionLocation = Location.TOP_CENTER;
     /**
      * the text used in the description
      */
@@ -30,6 +35,13 @@ public class Description extends ComponentBase {
 
         // default size
         mTextSize = Utils.convertDpToPixel(8f);
+    }
+
+    public Description(String text) {
+        super();
+        // default size
+        mTextSize = Utils.convertDpToPixel(8f);
+        this.text = text;
     }
 
     /**
@@ -91,5 +103,17 @@ public class Description extends ComponentBase {
      */
     public Paint.Align getTextAlign() {
         return mTextAlign;
+    }
+
+    /**
+     * Set the location of description on chart view
+     * @param descriptionLocation default TOP_CENTER
+     */
+    public void setDescriptionLocation(Location descriptionLocation) {
+        this.descriptionLocation = descriptionLocation;
+    }
+
+    public Location getDescriptionLocation() {
+        return descriptionLocation;
     }
 }

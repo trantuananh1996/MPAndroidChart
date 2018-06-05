@@ -3,6 +3,8 @@ package com.github.mikephil.charting.components;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.ColorInt;
+import android.support.annotation.Size;
 
 import com.github.mikephil.charting.utils.Utils;
 
@@ -38,11 +40,14 @@ public abstract class ComponentBase {
      */
     protected float mTextSize = Utils.convertDpToPixel(10f);
 
+    protected float mBackgroundPadding;
     /**
      * the text color to use for the labels
      */
     protected int mTextColor = Color.BLACK;
 
+    @ColorInt
+    protected int mBackgroundColor = Color.TRANSPARENT;
 
     public ComponentBase() {
 
@@ -122,6 +127,20 @@ public abstract class ComponentBase {
         mTextSize = Utils.convertDpToPixel(size);
     }
 
+
+    /**
+     * Set the padding size of the background
+     *
+     * @param size padding size, in DP
+     */
+    public void setBackgroundPadding(@Size(min = 0, max = 20) float size) {
+        mBackgroundPadding = Utils.convertDpToPixel(size);
+    }
+
+    public float getBackgroundPadding() {
+        return mBackgroundPadding;
+    }
+
     /**
      * returns the text size that is currently set for the labels, in pixels
      *
@@ -149,6 +168,26 @@ public abstract class ComponentBase {
      */
     public int getTextColor() {
         return mTextColor;
+    }
+
+    /**
+     * Sets the background color to use for the labels. Make sure to use
+     * getResources().getColor(...) when using a color from the resources.
+     *
+     * @param color default TRANSPARENT
+     */
+    public void setBackgroundColor(@ColorInt int color) {
+        mBackgroundColor = color;
+    }
+
+    /**
+     * Returns the background color that is set for the labels.
+     *
+     * @return
+     */
+    @ColorInt
+    public int getBackgroundColor() {
+        return mBackgroundColor;
     }
 
     /**
