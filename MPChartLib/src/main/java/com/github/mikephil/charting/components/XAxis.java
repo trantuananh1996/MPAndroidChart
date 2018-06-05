@@ -13,6 +13,12 @@ import com.github.mikephil.charting.utils.Utils;
 public class XAxis extends AxisBase {
 
     /**
+     * height of the x-axis title in pixels - this is automatically
+     * calculated by the computeSize() methods in the renderers
+     */
+    public int mTitleHeight = 1;
+
+    /**
      * width of the x-axis labels in pixels - this is automatically
      * calculated by the computeSize() methods in the renderers
      */

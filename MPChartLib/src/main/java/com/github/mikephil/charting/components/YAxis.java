@@ -17,7 +17,11 @@ import com.github.mikephil.charting.utils.Utils;
  * @author Philipp Jahoda
  */
 public class YAxis extends AxisBase {
-
+    /**
+     * height of the y-axis title in pixels - this is automatically
+     * calculated by the getRequiredWidthSpace() methods in the renderers
+     */
+    public int mTitleHeight = 1;
     /**
      * indicates if the bottom y-label entry is drawn or not
      */
@@ -325,7 +329,10 @@ public class YAxis extends AxisBase {
 
         String label = getLongestLabel();
         float width = (float) Utils.calcTextWidth(p, label) + getXOffset() * 2f;
-
+        if (!this.getTitle().isEmpty()) {
+            this.mTitleHeight = Utils.calcTextHeight(p, "Q");
+            width += mTitleHeight + getXOffset();
+        }
         float minWidth = getMinWidth();
         float maxWidth = getMaxWidth();
 
@@ -370,14 +377,14 @@ public class YAxis extends AxisBase {
     /**
      * Returns true if autoscale restriction for axis min value is enabled
      */
-    public boolean isUseAutoScaleMinRestriction( ) {
+    public boolean isUseAutoScaleMinRestriction() {
         return mUseAutoScaleRestrictionMin;
     }
 
     /**
      * Sets autoscale restriction for axis min value as enabled/disabled
      */
-    public void setUseAutoScaleMinRestriction( boolean isEnabled ) {
+    public void setUseAutoScaleMinRestriction(boolean isEnabled) {
         mUseAutoScaleRestrictionMin = isEnabled;
     }
 
@@ -391,7 +398,7 @@ public class YAxis extends AxisBase {
     /**
      * Sets autoscale restriction for axis max value as enabled/disabled
      */
-    public void setUseAutoScaleMaxRestriction( boolean isEnabled ) {
+    public void setUseAutoScaleMaxRestriction(boolean isEnabled) {
         mUseAutoScaleRestrictionMax = isEnabled;
     }
 
@@ -403,17 +410,17 @@ public class YAxis extends AxisBase {
         float max = dataMax;
 
         // if custom, use value as is, else use data value
-        if( mCustomAxisMin ) {
-            if( mUseAutoScaleRestrictionMin ) {
-                min = Math.min( dataMin, mAxisMinimum );
+        if (mCustomAxisMin) {
+            if (mUseAutoScaleRestrictionMin) {
+                min = Math.min(dataMin, mAxisMinimum);
             } else {
                 min = mAxisMinimum;
             }
         }
 
-        if( mCustomAxisMax ) {
-            if( mUseAutoScaleRestrictionMax ) {
-                max = Math.max( max, mAxisMaximum );
+        if (mCustomAxisMax) {
+            if (mUseAutoScaleRestrictionMax) {
+                max = Math.max(max, mAxisMaximum);
             } else {
                 max = mAxisMaximum;
             }
@@ -427,12 +434,19 @@ public class YAxis extends AxisBase {
             max = max + 1f;
             min = min - 1f;
         }
+        // bottom-space only effects non-custom min
+        if (!mCustomAxisMin && min == dataMin) {
 
-        float bottomSpace = range / 100f * getSpaceBottom();
-        this.mAxisMinimum = (min - bottomSpace);
-            
-        float topSpace = range / 100f * getSpaceTop();
-        this.mAxisMaximum = (max + topSpace);
+            float bottomSpace = range / 100f * getSpaceBottom();
+            this.mAxisMinimum = (min - bottomSpace);
+        }
+
+        // top-space only effects non-custom max
+        if (!mCustomAxisMax && max == dataMax) {
+
+            float topSpace = range / 100f * getSpaceTop();
+            this.mAxisMaximum = (max + topSpace);
+        }
 
         // calc actual range
         this.mAxisRange = Math.abs(this.mAxisMaximum - this.mAxisMinimum);

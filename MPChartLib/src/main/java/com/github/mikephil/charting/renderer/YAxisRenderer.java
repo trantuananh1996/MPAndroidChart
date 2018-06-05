@@ -11,6 +11,7 @@ import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
 import com.github.mikephil.charting.components.YAxis.YAxisLabelPosition;
+import com.github.mikephil.charting.utils.FSize;
 import com.github.mikephil.charting.utils.MPPointD;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
@@ -29,7 +30,7 @@ public class YAxisRenderer extends AxisRenderer {
 
         this.mYAxis = yAxis;
 
-        if(mViewPortHandler != null) {
+        if (mViewPortHandler != null) {
 
             mAxisLabelPaint.setColor(Color.BLACK);
             mAxisLabelPaint.setTextSize(Utils.convertDpToPixel(10f));
@@ -129,6 +130,7 @@ public class YAxisRenderer extends AxisRenderer {
     }
 
     protected Path mRenderGridLinesPath = new Path();
+
     @Override
     public void renderGridLines(Canvas c) {
 
@@ -190,6 +192,7 @@ public class YAxisRenderer extends AxisRenderer {
     }
 
     protected float[] mGetTransformedPositionsBuffer = new float[2];
+
     /**
      * Transforms the values contained in the axis entries to screen pixels and returns them in form of a float array
      * of x- and y-coordinates.
@@ -198,7 +201,7 @@ public class YAxisRenderer extends AxisRenderer {
      */
     protected float[] getTransformedPositions() {
 
-        if(mGetTransformedPositionsBuffer.length != mYAxis.mEntryCount * 2){
+        if (mGetTransformedPositionsBuffer.length != mYAxis.mEntryCount * 2) {
             mGetTransformedPositionsBuffer = new float[mYAxis.mEntryCount * 2];
         }
         float[] positions = mGetTransformedPositionsBuffer;
@@ -246,6 +249,7 @@ public class YAxisRenderer extends AxisRenderer {
     protected Path mRenderLimitLines = new Path();
     protected float[] mRenderLimitLinesBuffer = new float[2];
     protected RectF mLimitLineClippingRect = new RectF();
+
     /**
      * Draws the LimitLines associated with this axis to the screen.
      *
@@ -343,5 +347,29 @@ public class YAxisRenderer extends AxisRenderer {
 
             c.restoreToCount(clipRestoreCount);
         }
+    }
+
+    @Override
+    public void renderAxisTitle(Canvas c) {
+        if (!mYAxis.isEnabled() || mYAxis.getTitle().isEmpty())
+            return;
+        mAxisTitlePaint.setTypeface(mYAxis.getTypeface());
+        mAxisTitlePaint.setTextSize(mYAxis.getTextSize());
+        mAxisTitlePaint.setColor(mYAxis.getTextColor());
+        mAxisTitlePaint.setTextAlign(Paint.Align.LEFT);
+        float xOffset = mYAxis.getXOffset();
+
+        final FSize titleSize = Utils.calcTextSize(mAxisLabelPaint, mYAxis.getTitle());
+
+        float posX = mYAxis.mTitleHeight + xOffset;
+        float posY = (mViewPortHandler.getChartHeight() / 2.f) + (titleSize.width / 2.f);
+        if (mYAxis.getAxisDependency() == AxisDependency.RIGHT) {
+            posX = mViewPortHandler.getChartWidth() - xOffset;
+        }
+
+        c.save();
+        c.rotate(-90, posX, posY);
+        c.drawText(mYAxis.getTitle(), posX, posY, mAxisTitlePaint);
+        c.restore();
     }
 }

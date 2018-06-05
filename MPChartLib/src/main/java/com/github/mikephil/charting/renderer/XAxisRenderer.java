@@ -80,6 +80,7 @@ public class XAxisRenderer extends AxisRenderer {
 
         mAxisLabelPaint.setTypeface(mXAxis.getTypeface());
         mAxisLabelPaint.setTextSize(mXAxis.getTextSize());
+        final float titleHeight = Utils.calcTextHeight(mAxisTitlePaint, "Q");
 
         final FSize labelSize = Utils.calcTextSize(mAxisLabelPaint, longest);
 
@@ -96,6 +97,7 @@ public class XAxisRenderer extends AxisRenderer {
         mXAxis.mLabelHeight = Math.round(labelHeight);
         mXAxis.mLabelRotatedWidth = Math.round(labelRotatedSize.width);
         mXAxis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
+        mXAxis.mTitleHeight = Math.round(titleHeight + 15);
 
         FSize.recycleInstance(labelRotatedSize);
         FSize.recycleInstance(labelSize);
@@ -113,7 +115,7 @@ public class XAxisRenderer extends AxisRenderer {
         mAxisLabelPaint.setTextSize(mXAxis.getTextSize());
         mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
-        MPPointF pointF = MPPointF.getInstance(0,0);
+        MPPointF pointF = MPPointF.getInstance(0, 0);
         if (mXAxis.getPosition() == XAxisPosition.TOP) {
             pointF.x = 0.5f;
             pointF.y = 1.0f;
@@ -143,6 +145,23 @@ public class XAxisRenderer extends AxisRenderer {
             drawLabels(c, mViewPortHandler.contentBottom() + yoffset, pointF);
         }
         MPPointF.recycleInstance(pointF);
+    }
+
+    @Override
+    public void renderAxisTitle(Canvas c) {
+        if (!mXAxis.isEnabled() || mXAxis.getTitle().isEmpty())
+            return;
+
+        mAxisTitlePaint.setTypeface(mXAxis.getTypeface());
+        mAxisTitlePaint.setTextSize(mXAxis.getTextSize());
+        mAxisTitlePaint.setColor(mXAxis.getTextColor());
+        mAxisTitlePaint.setTextAlign(Paint.Align.LEFT);
+        float yOffset = mXAxis.getYOffset() * 3;
+
+        final FSize titleSize = Utils.calcTextSize(mAxisLabelPaint, mXAxis.getTitle());
+        float posX = (mViewPortHandler.getChartWidth() / 2.f) - (titleSize.width / 2);
+        float posY = mViewPortHandler.contentBottom() + yOffset + mXAxis.mLabelRotatedHeight + mXAxis.mTitleHeight;//mLegend.mNeededHeight;
+        c.drawText(mXAxis.getTitle(), posX, posY, mAxisTitlePaint);
     }
 
     @Override
@@ -230,8 +249,10 @@ public class XAxisRenderer extends AxisRenderer {
     protected void drawLabel(Canvas c, String formattedLabel, float x, float y, MPPointF anchor, float angleDegrees) {
         Utils.drawXAxisValue(c, formattedLabel, x, y, mAxisLabelPaint, anchor, angleDegrees);
     }
+
     protected Path mRenderGridLinesPath = new Path();
     protected float[] mRenderGridLinesBuffer = new float[2];
+
     @Override
     public void renderGridLines(Canvas c) {
 
@@ -241,7 +262,7 @@ public class XAxisRenderer extends AxisRenderer {
         int clipRestoreCount = c.save();
         c.clipRect(getGridClippingRect());
 
-        if(mRenderGridLinesBuffer.length != mAxis.mEntryCount * 2){
+        if (mRenderGridLinesBuffer.length != mAxis.mEntryCount * 2) {
             mRenderGridLinesBuffer = new float[mXAxis.mEntryCount * 2];
         }
         float[] positions = mRenderGridLinesBuffer;
