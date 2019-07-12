@@ -17,7 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore.Images;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -66,7 +66,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         ViewGroup
         implements ChartInterface {
 
-    public static final String LOG_TAG = "MPAndroidChart";
+    public static final String LOG_TAG = "";
 
     /**
      * flag that indicates if logging is enabled or not

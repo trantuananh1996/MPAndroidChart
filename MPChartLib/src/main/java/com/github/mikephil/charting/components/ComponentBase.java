@@ -3,8 +3,8 @@ package com.github.mikephil.charting.components;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.annotation.ColorInt;
-import android.support.annotation.Size;
+import androidx.annotation.ColorInt;
+import androidx.annotation.Size;
 
 import com.github.mikephil.charting.utils.Utils;
 
