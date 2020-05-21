@@ -1,6 +1,8 @@
 
 package com.github.mikephil.charting.data;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,6 +167,7 @@ public abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
         super.copy(dataSet);
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();

@@ -1,6 +1,8 @@
 
 package com.github.mikephil.charting.highlight;
 
+import androidx.annotation.NonNull;
+
 import com.github.mikephil.charting.components.YAxis;
 
 /**
@@ -227,6 +229,7 @@ public class Highlight {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Highlight, x: " + mX + ", y: " + mY + ", dataSetIndex: " + mDataSetIndex

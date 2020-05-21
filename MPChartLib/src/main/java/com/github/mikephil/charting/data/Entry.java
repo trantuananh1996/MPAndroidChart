@@ -6,6 +6,8 @@ import android.os.Parcel;
 import android.os.ParcelFormatException;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.github.mikephil.charting.utils.Utils;
 
 /**
@@ -127,6 +129,7 @@ public class Entry extends BaseEntry implements Parcelable {
     /**
      * returns a string representation of the entry containing x-index and value
      */
+    @NonNull
     @Override
     public String toString() {
         return "Entry, x: " + x + " y: " + getY();

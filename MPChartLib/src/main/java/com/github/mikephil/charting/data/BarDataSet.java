@@ -3,6 +3,8 @@ package com.github.mikephil.charting.data;
 
 import android.graphics.Color;
 
+import androidx.annotation.IntRange;
+
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
@@ -212,7 +214,7 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
      *
      * @param alpha
      */
-    public void setHighLightAlpha(int alpha) {
+    public void setHighLightAlpha(@IntRange(from = 0, to = 255) int alpha) {
         mHighLightAlpha = alpha;
     }
 

@@ -4,6 +4,8 @@ package com.github.mikephil.charting.charts;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
+
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.interfaces.dataprovider.ScatterDataProvider;
 import com.github.mikephil.charting.renderer.ScatterChartRenderer;
@@ -65,6 +67,7 @@ public class ScatterChart extends BarLineChartBase<ScatterData> implements Scatt
             this.shapeIdentifier = shapeIdentifier;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return shapeIdentifier;

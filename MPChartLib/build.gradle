@@ -4,12 +4,12 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.philjay'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     // resourcePrefix 'mpcht'
     defaultConfig {
         //noinspection MinSdkTooLow
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion 17
+        targetSdkVersion 29
         versionCode 3
         versionName '3.1.0'
     }
@@ -26,9 +26,9 @@ android {
 
 dependencies {
     //provided 'io.realm:realm-android:0.87.5' // "optional" dependency to realm-database API
-    implementation 'com.android.support:support-annotations:28.0.0'
-    testImplementation 'junit:junit:4.13-beta-2'
-    testImplementation "org.mockito:mockito-core:2.27.0"
+    implementation 'androidx.annotation:annotation:1.1.0'
+    testImplementation 'junit:junit:4.13-beta-3'
+    testImplementation "org.mockito:mockito-core:3.0.0"
 }
 
 android.libraryVariants.all { variant ->
@@ -44,19 +44,19 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
-task javadoc(type: Javadoc) {
-    options.charSet = 'UTF-8'
-    failOnError false
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
+//task javadoc(type: Javadoc) {
+//    options.charSet = 'UTF-8'
+//    failOnError false
+//    source = android.sourceSets.main.java.sourceFiles
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//}
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
+//artifacts {
+//    archives sourcesJar
+//    archives javadocJar
+//}

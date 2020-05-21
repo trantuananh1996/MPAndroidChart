@@ -1,6 +1,8 @@
 
 package com.github.mikephil.charting.utils;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 /**
@@ -47,6 +49,7 @@ public class MPPointD extends ObjectPool.Poolable {
     /**
      * returns a string representation of the object
      */
+    @NonNull
     public String toString() {
         return "MPPointD, x: " + x + ", y: " + y;
     }

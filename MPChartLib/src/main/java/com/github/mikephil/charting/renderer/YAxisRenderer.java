@@ -40,6 +40,7 @@ public class YAxisRenderer extends AxisRenderer {
             mZeroLinePaint.setStrokeWidth(1f);
             mZeroLinePaint.setStyle(Paint.Style.STROKE);
         }
+        mAxisLabelPaint.setTypeface(mYAxis.getTypeface());
     }
 
     /**

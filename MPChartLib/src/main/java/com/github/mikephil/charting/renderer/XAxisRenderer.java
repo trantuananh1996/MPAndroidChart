@@ -31,6 +31,7 @@ public class XAxisRenderer extends AxisRenderer {
         mAxisLabelPaint.setColor(Color.BLACK);
         mAxisLabelPaint.setTextAlign(Align.CENTER);
         mAxisLabelPaint.setTextSize(Utils.convertDpToPixel(10f));
+        mAxisLabelPaint.setTypeface(mXAxis.getTypeface());
     }
 
     protected void setupGridPaint() {
@@ -128,7 +129,7 @@ public class XAxisRenderer extends AxisRenderer {
         } else if (mXAxis.getPosition() == XAxisPosition.BOTTOM) {
             pointF.x = 0.5f;
             pointF.y = 0.0f;
-            drawLabels(c, mViewPortHandler.contentBottom() + yoffset, pointF);
+            drawLabels(c, mViewPortHandler.contentBottom() + yoffset - 3, pointF);
 
         } else if (mXAxis.getPosition() == XAxisPosition.BOTTOM_INSIDE) {
             pointF.x = 0.5f;
